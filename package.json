@@ -2,7 +2,7 @@
   "name": "recipe-markdown",
   "version": "1.0.0",
   "description": "Markdown format for recipes",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/BDav24/recipe-markdown",
   "author": "David Brown",
   "license": "MIT",
