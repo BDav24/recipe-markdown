@@ -1,61 +1,67 @@
+export enum RecipeType {
+  Appetizer = 'appetizer',
+  Starter = 'starter',
+  MainDish = 'main dish',
+  SideDish = 'side dish',
+  Sauce = 'sauce',
+  Dessert = 'dessert',
+  Drink = 'drink'
+}
+
 export type Recipe = {
   title: string
   description?: Text
-  ingredients: Ingredient[]
+  ingredients?: Ingredient[]
   servings?: number
-  directions: { [step: number]: Direction[] }
+  ustensils?: Ustensil[]
+  directions: Direction[]
   media?: Media[]
-  meta: {
-    type?: RecipeType | string
-    tags?: string[]
-    place?: Place[]
-    prepareTimeSeconds?: number
-    cookTimeSeconds?: number
-    complexity?: number
-    cost?: number
-    utensils?: Utensil[]
-    // nutrition?: calories...
-  }
+  meta?: RecipeMetaType
 }
 
-enum RecipeType {
-  Appetizer,
-  Starter,
-  MainDish,
-  SideDish,
-  Sauce,
-  Dessert,
-  Drink
+export type RecipeMetaType = {
+  type?: RecipeType | string
+  tags?: string[]
+  places?: Place[]
+  prepTime?: string
+  cookTime?: string
+  complexity?: string
+  cost?: string
+  // nutrition?: calories...
 }
 
-type Text = {
+export type Text = {
   type: 'text' | 'comment'
   text: string
 }[]
 
-type Ingredient = {
+export type Ingredient = {
+  group?: string
   name: string
   quantity: number
   unit?: string
   media?: Media
 }
 
-type Direction = {
+export type Direction = {
+  group?: string
+  step?: string
   text: Text
   media?: Media[]
 }
 
-type Place = {
+export type Place = {
   type?: string
   label: string
 }
 
-type Media = {
-  type: 'picture' | 'video'
-  url: string
+export type Media = {
+  src: string
+  url?: string
+  alt?: string
 }
 
-type Utensil = {
+export type Ustensil = {
   label: string
   quantity?: number
   media?: Media
