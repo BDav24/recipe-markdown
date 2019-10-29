@@ -1,6 +1,9 @@
 import {
+  Content,
   Direction,
+  DirectionGroup,
   Ingredient,
+  IngredientGroup,
   Media,
   Place,
   Recipe,
@@ -8,84 +11,128 @@ import {
   Text,
   Ustensil
 } from './types'
-import { joinNotEmpty } from './utils'
+import { isEmpty, isEmptyArray, joinNotEmpty, nonEmptyArray, notEmpty } from './utils'
 
 export default function recipeToMarkdown(recipe: Recipe): string {
-  const { title, description, ingredients, ustensils, servings, directions, media, meta } = recipe
-  return joinNotEmpty(
+  const {
+    meta,
+    title,
+    description,
+    ingredientGroups,
+    servings,
+    ustensils,
+    directionGroups
+  } = recipe
+  const recipeMarkdown = joinNotEmpty(
     [
-      meta && metaToMarkdown(meta),
-      title && titleToMarkdown(title),
-      description && textToMarkdown(description),
-      media && media.length > 0 && mediaToMarkdown(media),
-      '---',
-      ingredients && ingredients.length > 0 && ingredientsToMarkdown(ingredients, servings),
-      '---',
-      ustensils && ustensils.length > 0 && ustensilsToMarkdown(ustensils),
-      '---',
-      directions && directions.length > 0 && directionsToMarkdown(directions)
+      metaToMarkdown(meta),
+      titleToMarkdown(title),
+      contentToMarkdown(description),
+      separatorIf(nonEmptyArray(description)),
+      ingredientGroupsToMarkdown(ingredientGroups, servings),
+      separatorIf(nonEmptyArray(ingredientGroups)),
+      ustensilsToMarkdown(ustensils),
+      separatorIf(nonEmptyArray(ustensils)),
+      directionGroupsToMarkdown(directionGroups)
     ],
     '\n\n'
   )
+  return notEmpty(recipeMarkdown) ? `\n${recipeMarkdown}\n` : ''
 }
 
+const separatorIf = (condition: boolean): string => (condition ? '---' : null)
+
 const metaToMarkdown = (meta: RecipeMetaType): string => {
+  if (isEmpty(meta)) return ''
   const { type, tags, places, prepTime, cookTime, complexity, cost } = meta
   const metaMarkdown = joinNotEmpty(
     [
-      type && `type: ${type}`,
-      tags && tags.length > 0 && tagsToMarkdown(tags),
-      places && places.length > 0 && placesToMarkdown(places),
-      prepTime && `prep time: ${prepTime}`,
-      cookTime && `cook time: ${cookTime}`,
-      complexity && `complexity: ${complexity}`,
-      cost && `cost: ${cost}`
+      notEmpty(type) ? `type: ${type}` : null,
+      tagsToMarkdown(tags),
+      placesToMarkdown(places),
+      notEmpty(prepTime) ? `prep time: ${prepTime}` : null,
+      notEmpty(cookTime) ? `cook time: ${cookTime}` : null,
+      notEmpty(complexity) ? `complexity: ${complexity}` : null,
+      notEmpty(cost) ? `cost: ${cost}` : null
     ],
     '\n'
   )
-  return metaMarkdown ? `---\n${metaMarkdown}\n---` : ''
+  return notEmpty(metaMarkdown) ? `---\n${metaMarkdown}\n---` : ''
 }
 
 const tagsToMarkdown = (tags: string[]): string => {
-  return `tags:\n${joinNotEmpty(tags.map(tag => `- ${tag}`), '\n')}`
+  if (isEmptyArray(tags)) return ''
+  return `tags:\n${joinNotEmpty(tags.map(tag => `  - ${tag}`), '\n')}`
 }
 
 const placesToMarkdown = (places: Place[]): string => {
+  if (isEmptyArray(places)) return ''
   return `places:\n${joinNotEmpty(
-    places.map(({ type, label }) => `- ${type ? `${type}:` : ''}${label}`),
+    places.map(
+      ({ type, label }) => `  - ${notEmpty(type) ? `${type}: ` : ''}${notEmpty(label) ? label : ''}`
+    ),
     '\n'
   )}`
 }
 
 const titleToMarkdown = (title: string): string => {
+  if (isEmpty(title)) return ''
   return `# ${title}`
 }
 
-const textToMarkdown = (text: Text): string => {
-  // TODO: textToMarkdown
-  return ''
-}
-
-const mediaToMarkdown = (media: Media[]): string => {
+const contentToMarkdown = (content: Content): string => {
+  if (isEmpty(content)) return ''
   return joinNotEmpty(
-    media.map(({ src, url, alt }) => {
-      const imgMarkdown = `![${alt}](${src})`
-      return url ? `[${imgMarkdown}](${url})` : imgMarkdown
+    content.map((chunk): string => {
+      const { type } = chunk
+      if (type === 'comment') return `> ${(chunk as Text).text}`
+      if (type === 'text') return (chunk as Text).text
+      if (type === 'photo' || type === 'video') return mediaToMarkdown(chunk as Media)
+      return ''
     }),
-    '\n'
+    '\n\n'
   )
 }
 
-const ingredientsToMarkdown = (ingredients: Ingredient[], servings?: number): string => {
-  // TODO: ingredientsToMarkdown
-  return joinNotEmpty(['## Ingredients', servings && `(${servingsToMarkdown(servings)})`], ' ')
+const mediaToMarkdown = (media: Media): string => {
+  if (isEmpty(media)) return ''
+  const { src, url, alt } = media
+  if (isEmpty(src)) return ''
+  const imgMarkdown = joinNotEmpty(['![', alt, '](', src, ')'], '')
+  return notEmpty(url) ? `[${imgMarkdown}](${url})` : imgMarkdown
+}
+
+const ingredientGroupsToMarkdown = (
+  ingredientGroups: IngredientGroup[],
+  servings?: number
+): string => {
+  if (isEmptyArray(ingredientGroups)) return ''
+  const title = joinNotEmpty(['## Ingredients', `(${servingsToMarkdown(servings)})`], ' ')
+  return joinNotEmpty(
+    [title, joinNotEmpty(ingredientGroups.map(ingredientGroupToMarkdown), '\n\n')],
+    '\n\n'
+  )
+}
+
+const ingredientGroupToMarkdown = (ingredientGroup: IngredientGroup): string => {
+  const { name, ingredients } = ingredientGroup
+  if (isEmptyArray(ingredients)) return ''
+  return joinNotEmpty([name, joinNotEmpty(ingredients.map(ingredientToMarkdown), '\n')], '\n')
+}
+
+const ingredientToMarkdown = (ingredient: Ingredient): string => {
+  if (isEmpty(ingredient)) return ''
+  const { name, quantity, unit, media } = ingredient
+  return joinNotEmpty(['-', quantity, unit, name, mediaToMarkdown(media)], ' ')
 }
 
 const servingsToMarkdown = (servings: number): string => {
+  if (isEmpty(servings)) return ''
   return `${servings} person${servings > 1 ? 's' : ''}`
 }
 
 const ustensilsToMarkdown = (ustensils: Ustensil[]): string => {
+  if (isEmptyArray(ustensils)) return ''
   return joinNotEmpty(
     ['## Ustensils', joinNotEmpty(ustensils.map(ustensilToMarkdown), '\n')],
     '\n\n'
@@ -93,11 +140,25 @@ const ustensilsToMarkdown = (ustensils: Ustensil[]): string => {
 }
 
 const ustensilToMarkdown = (ustensil: Ustensil): string => {
-  const { quantity, label, media } = ustensil
-  return joinNotEmpty(['-', media && mediaToMarkdown([media]), quantity, label], ' ')
+  const { media, quantity, label } = ustensil
+  return joinNotEmpty(['-', mediaToMarkdown(media), quantity, label], ' ')
 }
 
-const directionsToMarkdown = (directions: Direction[]): string => {
-  // TODO: directionsToMarkdown
-  return '## Directions'
+const directionGroupsToMarkdown = (directionGroups: DirectionGroup[]): string => {
+  if (isEmptyArray(directionGroups)) return ''
+  return joinNotEmpty(
+    ['## Directions', joinNotEmpty(directionGroups.map(directionGroupToMarkdown), '\n\n')],
+    '\n\n'
+  )
+}
+
+const directionGroupToMarkdown = (directionGroup: DirectionGroup): string => {
+  const { name, directions } = directionGroup
+  if (isEmptyArray(directions)) return ''
+  return joinNotEmpty([name, joinNotEmpty(directions.map(directionToMarkdown), '\n\n')], '\n')
+}
+
+const directionToMarkdown = (direction: Direction): string => {
+  const { step, content } = direction
+  return joinNotEmpty([notEmpty(step) ? `### ${step}` : null, contentToMarkdown(content)], '\n\n')
 }

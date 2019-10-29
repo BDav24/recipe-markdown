@@ -8,18 +8,27 @@ export enum RecipeType {
   Drink = 'drink'
 }
 
-export type Recipe = {
+export interface Recipe {
   title: string
-  description?: Text
-  ingredients?: Ingredient[]
+  directionGroups: DirectionGroup[]
+  meta?: RecipeMetaType
+  description?: Content
+  ingredientGroups?: IngredientGroup[]
   servings?: number
   ustensils?: Ustensil[]
-  directions: Direction[]
-  media?: Media[]
-  meta?: RecipeMetaType
 }
 
-export type RecipeMetaType = {
+export interface DirectionGroup {
+  name?: string
+  directions: Direction[]
+}
+
+export interface Direction {
+  step?: string
+  content: Content
+}
+
+export interface RecipeMetaType {
   type?: RecipeType | string
   tags?: string[]
   places?: Place[]
@@ -30,39 +39,39 @@ export type RecipeMetaType = {
   // nutrition?: calories...
 }
 
-export type Text = {
-  type: 'text' | 'comment'
-  text: string
-}[]
+export type Content = Array<Text | Media>
 
-export type Ingredient = {
-  group?: string
+export interface IngredientGroup {
+  name?: string
+  ingredients: Ingredient[]
+}
+
+export interface Ingredient {
   name: string
   quantity: number
   unit?: string
   media?: Media
 }
 
-export type Direction = {
-  group?: string
-  step?: string
-  text: Text
-  media?: Media[]
-}
-
-export type Place = {
-  type?: string
+export interface Ustensil {
   label: string
+  quantity?: number
+  media?: Media
 }
 
-export type Media = {
+export interface Text {
+  type: 'text' | 'comment'
+  text: string
+}
+
+export interface Media {
+  type: 'photo' | 'video'
   src: string
   url?: string
   alt?: string
 }
 
-export type Ustensil = {
+export interface Place {
+  type?: string
   label: string
-  quantity?: number
-  media?: Media
 }
