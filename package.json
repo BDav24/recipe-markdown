@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint src/**",
-    "test": "yarn run build && node tests/"
+    "test": "yarn run build && node tests/runAll"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.5.0",
