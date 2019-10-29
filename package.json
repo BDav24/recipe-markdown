@@ -7,10 +7,13 @@
   "author": "David Brown",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint src/**",
+    "test": "yarn run build && node tests/"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.5.0",
+    "@typescript-eslint/parser": "^2.5.0",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
     "eslint-config-standard-with-typescript": "^10.0.0",
@@ -19,6 +22,7 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
+    "expect": "^24.9.0",
     "prettier": "^1.18.2",
     "typescript": "^3.6.4"
   }
