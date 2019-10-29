@@ -1,62 +1,77 @@
-export type Recipe = {
+export enum RecipeType {
+  Appetizer = 'appetizer',
+  Starter = 'starter',
+  MainDish = 'main dish',
+  SideDish = 'side dish',
+  Sauce = 'sauce',
+  Dessert = 'dessert',
+  Drink = 'drink'
+}
+
+export interface Recipe {
   title: string
-  description?: Text
-  ingredients: Ingredient[]
+  directionGroups: DirectionGroup[]
+  meta?: RecipeMetaType
+  description?: Content
+  ingredientGroups?: IngredientGroup[]
   servings?: number
-  directions: { [step: number]: Direction[] }
-  media?: Media[]
-  meta: {
-    type?: RecipeType | string
-    tags?: string[]
-    place?: Place[]
-    prepareTimeSeconds?: number
-    cookTimeSeconds?: number
-    complexity?: number
-    cost?: number
-    utensils?: Utensil[]
-    // nutrition?: calories...
-  }
+  ustensils?: Ustensil[]
 }
 
-enum RecipeType {
-  Appetizer,
-  Starter,
-  MainDish,
-  SideDish,
-  Sauce,
-  Dessert,
-  Drink
+export interface DirectionGroup {
+  name?: string
+  directions: Direction[]
 }
 
-type Text = {
-  type: 'text' | 'comment'
-  text: string
-}[]
+export interface Direction {
+  step?: string
+  content: Content
+}
 
-type Ingredient = {
+export interface RecipeMetaType {
+  type?: RecipeType | string
+  tags?: string[]
+  places?: Place[]
+  prepTime?: string
+  cookTime?: string
+  complexity?: string
+  cost?: string
+  // nutrition?: calories...
+}
+
+export type Content = Array<Text | Media>
+
+export interface IngredientGroup {
+  name?: string
+  ingredients: Ingredient[]
+}
+
+export interface Ingredient {
   name: string
   quantity: number
   unit?: string
   media?: Media
 }
 
-type Direction = {
-  text: Text
-  media?: Media[]
-}
-
-type Place = {
-  type?: string
-  label: string
-}
-
-type Media = {
-  type: 'picture' | 'video'
-  url: string
-}
-
-type Utensil = {
+export interface Ustensil {
   label: string
   quantity?: number
   media?: Media
+}
+
+export interface Text {
+  type: 'text' | 'comment'
+  text: string
+}
+
+export interface Media {
+  type: 'photo' | 'video'
+  src: string
+  url?: string
+  alt?: string
+}
+
+export interface Place {
+  type?: string
+  label: string
 }
