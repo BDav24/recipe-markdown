@@ -1,7 +1,7 @@
 const expect = require('expect')
 
 const recipeToMarkdown = require('../lib/recipeToMarkdown').default
-const { empty, minimal, medium, complete } = require('./fixtures.test')
+const { empty, minimal, medium, complete } = require('./fixtures')
 
 module.exports = {
   run: () => {
