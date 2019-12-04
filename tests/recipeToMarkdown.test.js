@@ -5,9 +5,9 @@ const { empty, minimal, medium, complete } = require('./fixtures')
 
 module.exports = {
   run: () => {
-    expect(recipeToMarkdown(empty.recipe)).toBe(empty.markdown)
-    expect(recipeToMarkdown(minimal.recipe)).toBe(minimal.markdown)
-    expect(recipeToMarkdown(medium.recipe)).toBe(medium.markdown)
-    expect(recipeToMarkdown(complete.recipe)).toBe(complete.markdown)
+    expect(recipeToMarkdown(empty.recipe)).toStrictEqual(empty.markdown)
+    expect(recipeToMarkdown(minimal.recipe)).toStrictEqual(minimal.markdown)
+    expect(recipeToMarkdown(medium.recipe)).toStrictEqual(medium.markdown)
+    expect(recipeToMarkdown(complete.recipe)).toStrictEqual(complete.markdown)
   }
 }
