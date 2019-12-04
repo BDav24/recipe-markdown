@@ -16,7 +16,7 @@ export default function mediaToMarkdown(media: Media): string {
 }
 
 export function getMediaType(media: Media): MediaType {
-  const { src, url, alt } = media
+  const { src, url } = media
   if (isNotEmpty(url) && isEmpty(src)) return 'link'
   if (isEmpty(url) && isNotEmpty(src)) return 'photo'
   if (isNotEmpty(url) && isNotEmpty(src)) return 'video'

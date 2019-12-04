@@ -9,3 +9,10 @@ export const isNotEmptyArray = (v: any[]): boolean => isNotEmpty(v) && v.length 
 
 export const joinNotEmpty = (array: any[], separator: string): string =>
   array.filter(isNotEmpty).join(separator)
+
+export const captureGroup = (text: string, regexp: RegExp): string[] => {
+  const match = text.match(regexp)
+  if (isEmpty(match)) return []
+  const [, ...captured] = match
+  return captured
+}

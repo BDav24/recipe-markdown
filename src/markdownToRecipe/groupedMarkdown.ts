@@ -1,7 +1,9 @@
+import { isNotEmpty, isNotEmptyArray } from '../utils'
+
 export interface GroupedMarkdown {
   level: number
   title?: string
-  elements?: (GroupedMarkdown | string)[]
+  elements?: Array<GroupedMarkdown | string>
 }
 
 export function groupMarkdownByLevel(
@@ -32,26 +34,30 @@ export function isNotEmptyGroup(group: GroupedMarkdown): boolean {
   return flattenElements(group.elements).join('') !== ''
 }
 
-export function flattenElements(elements: (GroupedMarkdown | string)[]): string[] {
+export function flattenElements(elements: Array<GroupedMarkdown | string>): string[] {
   return elements.reduce((acc, element, index) => {
     if (element === '' && (index === 0 || index === elements.length - 1)) return acc
     return [
       ...acc,
-      ...(typeof element === 'string' ? [element] : flattenElements(element.elements || []))
+      ...(typeof element === 'string'
+        ? [element]
+        : isNotEmptyArray(element.elements)
+        ? flattenElements(element.elements)
+        : [])
     ]
   }, [])
 }
 
 export function flattenTitles(
-  elements: (GroupedMarkdown | string)[]
+  elements: Array<GroupedMarkdown | string>
 ): Array<{ level: number; title: string }> {
   return elements.reduce((acc, element) => {
     if (typeof element === 'string') return acc
     const { title, level, elements } = element
     return [
       ...acc,
-      ...(title ? [{ level, title }] : []),
-      ...(elements ? flattenTitles(elements) : [])
+      ...(isNotEmpty(title) ? [{ level, title }] : []),
+      ...(isNotEmptyArray(elements) ? flattenTitles(elements) : [])
     ]
   }, [])
 }

@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "onchange --delay 500 --kill --initial 'src/**/*.ts' 'tests/**/*.js' -- yarn run test",
     "build": "tsc",
-    "lint": "eslint src/**",
+    "lint": "eslint --ext .ts,.js src/** tests/**",
     "test": "yarn run build && node tests/runAll"
   },
   "devDependencies": {

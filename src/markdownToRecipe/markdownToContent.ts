@@ -1,4 +1,5 @@
 import { Html, Media, Text } from '../types'
+import { isNotEmpty } from '../utils'
 
 import markdownToMedia, { extractMediaMarkdown } from './markdownToMedia'
 
@@ -11,7 +12,7 @@ export default function markdownToContent(markdown: string): Text | Media | Html
     return { type: 'comment', text: markdown.replace(/^\s*> ?/, '') }
   } else {
     const [mediaMarkdown] = extractMediaMarkdown(markdown)
-    if (mediaMarkdown) {
+    if (isNotEmpty(mediaMarkdown)) {
       return markdownToMedia(mediaMarkdown)
     } else {
       return { type: 'text', text: markdown }

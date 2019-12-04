@@ -1,13 +1,13 @@
 import { RecipeMetaType } from '../types'
-import { isNotEmpty } from '../utils'
+import { captureGroup, isEmpty, isNotEmpty } from '../utils'
 
 export function extractMetaMarkdown(markdown: string): [string, string] {
-  const [metaMarkdown] = markdown.match(/^[^#]*---([^#]*)---/s) || []
+  const [metaMarkdown] = captureGroup(markdown, /^[^#]*---([^#]*)---/s)
   return [metaMarkdown, markdown.replace(metaMarkdown, '').trim()]
 }
 
 export default function markdownToMeta(metaMarkdown: string): RecipeMetaType {
-  if (!metaMarkdown) return null
+  if (isEmpty(metaMarkdown)) return null
   return metaMarkdown
     .replace(/---/g, '')
     .split('\n')
@@ -43,7 +43,7 @@ export default function markdownToMeta(metaMarkdown: string): RecipeMetaType {
           ...acc,
           places: meta[key].map(place => {
             const [key, value] = place.split(/[:,]\s?/)
-            return value ? { type: key, label: value } : { label: key }
+            return isNotEmpty(value) ? { type: key, label: value } : { label: key }
           })
         }
       } else {
