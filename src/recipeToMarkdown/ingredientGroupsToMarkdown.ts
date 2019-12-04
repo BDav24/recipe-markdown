@@ -1,5 +1,5 @@
 import { Ingredient, IngredientGroup } from '../types'
-import { isEmpty, isEmptyArray, joinNotEmpty, notEmpty } from '../utils'
+import { isEmpty, isEmptyOrEmptyArray, joinNotEmpty, isNotEmpty } from '../utils'
 
 import mediaToMarkdown from './mediaToMarkdown'
 
@@ -7,9 +7,9 @@ export default function ingredientGroupsToMarkdown(
   ingredientGroups: IngredientGroup[],
   servings?: number
 ): string {
-  if (isEmptyArray(ingredientGroups)) return ''
+  if (isEmptyOrEmptyArray(ingredientGroups)) return ''
   const title = joinNotEmpty(
-    ['## Ingredients', notEmpty(servings) ? `(${servingsToMarkdown(servings)})` : null],
+    ['## Ingredients', isNotEmpty(servings) ? `(${servingsToMarkdown(servings)})` : null],
     ' '
   )
   return joinNotEmpty(
@@ -20,10 +20,10 @@ export default function ingredientGroupsToMarkdown(
 
 const ingredientGroupToMarkdown = (ingredientGroup: IngredientGroup): string => {
   const { name, ingredients } = ingredientGroup
-  if (isEmptyArray(ingredients)) return ''
+  if (isEmptyOrEmptyArray(ingredients)) return ''
   return joinNotEmpty(
     [
-      notEmpty(name) ? `### ${name}` : null,
+      isNotEmpty(name) ? `### ${name}` : null,
       joinNotEmpty(ingredients.map(ingredientToMarkdown), '\n')
     ],
     '\n\n'

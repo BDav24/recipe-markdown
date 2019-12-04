@@ -1,5 +1,5 @@
 import { Recipe } from '../types'
-import { joinNotEmpty, nonEmptyArray, notEmpty } from '../utils'
+import { joinNotEmpty, isNotEmptyArray, isNotEmpty } from '../utils'
 
 import contentToMarkdown from './contentToMarkdown'
 import directionGroupsToMarkdown from './directionGroupsToMarkdown'
@@ -23,16 +23,16 @@ export default function recipeToMarkdown(recipe: Recipe): string {
       metaToMarkdown(meta),
       titleToMarkdown(title),
       contentToMarkdown(description),
-      separatorIf(nonEmptyArray(description)),
+      separatorIf(isNotEmptyArray(description)),
       ingredientGroupsToMarkdown(ingredientGroups, servings),
-      separatorIf(nonEmptyArray(ingredientGroups)),
+      separatorIf(isNotEmptyArray(ingredientGroups)),
       ustensilsToMarkdown(ustensils),
-      separatorIf(nonEmptyArray(ustensils)),
+      separatorIf(isNotEmptyArray(ustensils)),
       directionGroupsToMarkdown(directionGroups)
     ],
     '\n\n'
   )
-  return notEmpty(recipeMarkdown) ? `\n${recipeMarkdown}\n` : ''
+  return isNotEmpty(recipeMarkdown) ? `\n${recipeMarkdown}\n` : ''
 }
 
 const separatorIf = (condition: boolean): string => (condition ? '---' : null)

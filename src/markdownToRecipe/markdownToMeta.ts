@@ -1,5 +1,5 @@
 import { RecipeMetaType } from '../types'
-import { notEmpty } from '../utils'
+import { isNotEmpty } from '../utils'
 
 export function extractMetaMarkdown(markdown: string): [string, string] {
   const [metaMarkdown] = markdown.match(/^[^#]*---([^#]*)---/s) || []
@@ -11,7 +11,7 @@ export default function markdownToMeta(metaMarkdown: string): RecipeMetaType {
   return metaMarkdown
     .replace(/---/g, '')
     .split('\n')
-    .filter(notEmpty)
+    .filter(isNotEmpty)
     .reduce((acc, line) => {
       const [last, ...rest] = acc
       return /^\s*-/.test(line)
@@ -22,7 +22,7 @@ export default function markdownToMeta(metaMarkdown: string): RecipeMetaType {
     .map(line => {
       const [first, ...rest] = line
       const [key, ...value] = first.split(/[:,]\s?/)
-      return { [key.toLowerCase()]: value.concat(rest).filter(notEmpty) }
+      return { [key.toLowerCase()]: value.concat(rest).filter(isNotEmpty) }
     })
     .reduce((acc, meta): RecipeMetaType => {
       const [key] = Object.keys(meta)

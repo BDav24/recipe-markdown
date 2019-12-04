@@ -1,34 +1,35 @@
 import { Place, RecipeMetaType } from '../types'
-import { isEmpty, isEmptyArray, joinNotEmpty, notEmpty } from '../utils'
+import { isEmpty, isEmptyOrEmptyArray, joinNotEmpty, isNotEmpty } from '../utils'
 
 const metaToMarkdown = (meta: RecipeMetaType): string => {
   if (isEmpty(meta)) return ''
   const { type, tags, places, prepTime, cookTime, complexity, cost } = meta
   const metaMarkdown = joinNotEmpty(
     [
-      notEmpty(type) ? `type: ${type}` : null,
+      isNotEmpty(type) ? `type: ${type}` : null,
       tagsToMarkdown(tags),
       placesToMarkdown(places),
-      notEmpty(prepTime) ? `prep time: ${prepTime}` : null,
-      notEmpty(cookTime) ? `cook time: ${cookTime}` : null,
-      notEmpty(complexity) ? `complexity: ${complexity}` : null,
-      notEmpty(cost) ? `cost: ${cost}` : null
+      isNotEmpty(prepTime) ? `prep time: ${prepTime}` : null,
+      isNotEmpty(cookTime) ? `cook time: ${cookTime}` : null,
+      isNotEmpty(complexity) ? `complexity: ${complexity}` : null,
+      isNotEmpty(cost) ? `cost: ${cost}` : null
     ],
     '\n'
   )
-  return notEmpty(metaMarkdown) ? `---\n${metaMarkdown}\n---` : ''
+  return isNotEmpty(metaMarkdown) ? `---\n${metaMarkdown}\n---` : ''
 }
 
 const tagsToMarkdown = (tags: string[]): string => {
-  if (isEmptyArray(tags)) return ''
+  if (isEmptyOrEmptyArray(tags)) return ''
   return `tags:\n${joinNotEmpty(tags.map(tag => `  - ${tag}`), '\n')}`
 }
 
 const placesToMarkdown = (places: Place[]): string => {
-  if (isEmptyArray(places)) return ''
+  if (isEmptyOrEmptyArray(places)) return ''
   return `places:\n${joinNotEmpty(
     places.map(
-      ({ type, label }) => `  - ${notEmpty(type) ? `${type}: ` : ''}${notEmpty(label) ? label : ''}`
+      ({ type, label }) =>
+        `  - ${isNotEmpty(type) ? `${type}: ` : ''}${isNotEmpty(label) ? label : ''}`
     ),
     '\n'
   )}`

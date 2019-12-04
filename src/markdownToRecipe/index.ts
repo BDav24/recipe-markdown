@@ -8,13 +8,13 @@ import {
   Ustensil
 } from '../types'
 
-import { notEmpty } from '../utils'
+import { isNotEmpty } from '../utils'
 import {
   flattenElements,
   flattenTitles,
   GroupedMarkdown,
   groupMarkdownByLevel,
-  notEmptyGroup
+  isNotEmptyGroup
 } from './groupedMarkdown'
 import markdownToContent from './markdownToContent'
 import markdownToIngredient from './markdownToIngredient'
@@ -43,7 +43,7 @@ function groupedMarkdownToRecipe(groupedMarkdown: (GroupedMarkdown | string)[]):
     const info: Partial<Recipe> = {}
     if (level === 1) {
       info.title = title
-    } else if (level === 2 && !title && notEmptyGroup(group)) {
+    } else if (level === 2 && !title && isNotEmptyGroup(group)) {
       info.description = groupedMarkdownToContent(elements)
     } else if (title) {
       if (title.startsWith('Ingredient')) {
@@ -72,29 +72,30 @@ function groupedMarkdownToContent(groupedMarkdown: (GroupedMarkdown | string)[])
 function groupedMarkdownToIngredientGroups(
   groupedMarkdown: (GroupedMarkdown | string)[]
 ): IngredientGroup[] {
-  return groupedMarkdown.filter(notEmptyGroup).map(groupGroupedMarkdown => {
+  return groupedMarkdown.filter(isNotEmptyGroup).map(groupGroupedMarkdown => {
     if (typeof groupGroupedMarkdown === 'string') return null
     const { title, elements } = groupGroupedMarkdown
     return {
       ...(title ? { name: title } : null),
-      ingredients: groupedMarkdownToIngredients(elements.filter(notEmptyGroup))
+      ingredients: groupedMarkdownToIngredients(elements.filter(isNotEmptyGroup))
     }
   })
 }
 
+const isNotSeparator = (value: string): boolean => !/^-+$/.test(value)
+
 function groupedMarkdownToIngredients(groupedMarkdown): Ingredient[] {
   return flattenElements(groupedMarkdown)
-    .filter(value => !/^-+$/.test(value))
-    .filter(v => v)
+    .filter(isNotEmpty)
+    .filter(isNotSeparator)
     .map(value => value.replace(/^\s*- ?/, ''))
     .map(markdownToIngredient)
 }
 
 function groupedMarkdownToUstensils(groupedMarkdown: (GroupedMarkdown | string)[]): Ustensil[] {
-  const notSeparator = value => !/^-+$/.test(value)
   return flattenElements(groupedMarkdown)
-    .filter(notEmpty)
-    .filter(notSeparator)
+    .filter(isNotEmpty)
+    .filter(isNotSeparator)
     .map(value => value.replace(/^\s*- ?/, ''))
     .map(markdownToUstensil)
 }
@@ -105,16 +106,16 @@ function groupedMarkdownToDirectionGroups(
   const titles = flattenTitles(groupedMarkdown)
   const hasGroups = titles.some(({ level }) => level === 4)
   if (hasGroups) {
-    return groupedMarkdown.filter(notEmptyGroup).map(groupGroupedMarkdown => {
+    return groupedMarkdown.filter(isNotEmptyGroup).map(groupGroupedMarkdown => {
       if (typeof groupGroupedMarkdown === 'string') return null
       const { title, elements } = groupGroupedMarkdown
       return {
         ...(title ? { name: title } : null),
-        directions: elements.filter(notEmptyGroup).map(groupedMarkdownToDirection)
+        directions: elements.filter(isNotEmptyGroup).map(groupedMarkdownToDirection)
       }
     })
   } else {
-    return [{ directions: groupedMarkdown.filter(notEmptyGroup).map(groupedMarkdownToDirection) }]
+    return [{ directions: groupedMarkdown.filter(isNotEmptyGroup).map(groupedMarkdownToDirection) }]
   }
 }
 

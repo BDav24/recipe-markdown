@@ -1,10 +1,10 @@
 import { Ustensil } from '../types'
-import { isEmptyArray, joinNotEmpty, notEmpty } from '../utils'
+import { isEmptyOrEmptyArray, joinNotEmpty, isNotEmpty } from '../utils'
 
 import mediaToMarkdown, { getMediaType } from './mediaToMarkdown'
 
 export default function ustensilsToMarkdown(ustensils: Ustensil[]): string {
-  if (isEmptyArray(ustensils)) return ''
+  if (isEmptyOrEmptyArray(ustensils)) return ''
   return joinNotEmpty(
     ['## Ustensils', joinNotEmpty(ustensils.map(ustensilToMarkdown), '\n')],
     '\n\n'
@@ -13,7 +13,7 @@ export default function ustensilsToMarkdown(ustensils: Ustensil[]): string {
 
 const ustensilToMarkdown = (ustensil: Ustensil): string => {
   const { media, quantity, label } = ustensil
-  const isMediaLink = notEmpty(media) && getMediaType(media) === 'link'
+  const isMediaLink = isNotEmpty(media) && getMediaType(media) === 'link'
   return joinNotEmpty(
     [
       '-',

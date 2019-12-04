@@ -28,7 +28,7 @@ export function groupMarkdownByLevel(
     : splitMarkdown
 }
 
-export function notEmptyGroup(group: GroupedMarkdown): boolean {
+export function isNotEmptyGroup(group: GroupedMarkdown): boolean {
   return flattenElements(group.elements).join('') !== ''
 }
 
