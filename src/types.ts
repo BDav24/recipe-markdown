@@ -39,7 +39,7 @@ export interface RecipeMetaType {
   // nutrition?: calories...
 }
 
-export type Content = Array<Text | Media>
+export type Content = Array<Text | Media | Html>
 
 export interface IngredientGroup {
   name?: string
@@ -48,7 +48,7 @@ export interface IngredientGroup {
 
 export interface Ingredient {
   name: string
-  quantity: number
+  quantity?: number
   unit?: string
   media?: Media
 }
@@ -64,11 +64,15 @@ export interface Text {
   text: string
 }
 
+export interface Html {
+  type: 'br' | 'hr'
+}
+
 export type MediaType = 'link' | 'photo' | 'video'
 
 export interface Media {
   type: MediaType
-  src: string
+  src?: string
   url?: string
   alt?: string
 }
