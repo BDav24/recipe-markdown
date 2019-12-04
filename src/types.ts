@@ -64,8 +64,10 @@ export interface Text {
   text: string
 }
 
+export type MediaType = 'link' | 'photo' | 'video'
+
 export interface Media {
-  type: 'photo' | 'video'
+  type: MediaType
   src: string
   url?: string
   alt?: string

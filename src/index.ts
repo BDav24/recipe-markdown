@@ -1,1 +1,1 @@
-export { default as recipeToMarkdown } from './recipeToMarkdown'
+export { default as recipeToMarkdown } from './recipeToMarkdown/index'
