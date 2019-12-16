@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Markdown format for recipes",
   "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "repository": "https://github.com/BDav24/recipe-markdown",
   "author": "David Brown",
   "license": "MIT",
