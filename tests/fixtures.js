@@ -75,9 +75,9 @@ cost: high
 
 # My awesome recipe
 
-Awesome description
-
 ![Awesome recipe](.../awesome-recipe.jpg)
+
+Awesome description
 
 > It's very good and easy to make!
 
@@ -135,10 +135,11 @@ Same same.
       cost: 'high'
     },
     title: 'My awesome recipe',
+    media: { type: 'photo', src: '.../awesome-recipe.jpg', alt: 'Awesome recipe' },
     description: [
-      { type: 'text', text: 'Awesome description' },
-      { type: 'br' },
       { type: 'photo', src: '.../awesome-recipe.jpg', alt: 'Awesome recipe' },
+      { type: 'br' },
+      { type: 'text', text: 'Awesome description' },
       { type: 'br' },
       { type: 'comment', text: "It's very good and easy to make!" },
       { type: 'br' },

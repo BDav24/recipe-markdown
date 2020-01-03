@@ -10,6 +10,7 @@ export enum RecipeType {
 
 export interface Recipe {
   title: string
+  media?: Media
   directionGroups: DirectionGroup[]
   meta?: RecipeMetaType
   description?: Content

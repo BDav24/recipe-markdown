@@ -1,3 +1,4 @@
+import { findFirstMedia } from '../recipeToMarkdown'
 import {
   Content,
   Direction,
@@ -47,6 +48,7 @@ function groupedMarkdownToRecipe(
       info.title = title
     } else if (level === 2 && isEmpty(title) && isNotEmptyGroup(group)) {
       info.description = groupedMarkdownToContent(elements)
+      info.media = findFirstMedia(info.description)
     } else if (isNotEmpty(title)) {
       if (title.startsWith('Ingredient')) {
         info.ingredientGroups = groupedMarkdownToIngredientGroups(elements)
