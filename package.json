@@ -1,6 +1,6 @@
 {
   "name": "recipe-markdown",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Markdown format for recipes",
   "main": "lib/index.js",
   "files": [
