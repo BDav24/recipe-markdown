@@ -89,7 +89,8 @@ Awesome description
 
 ### Main dish
 
-- a bit of this
+- this
+- a bit of that
 - 1 spoon of that ![That](.../that.jpg)
 
 ### Side dish
@@ -156,7 +157,8 @@ Same same.
       {
         name: 'Main dish',
         ingredients: [
-          { name: 'a bit of this' },
+          { name: 'this' },
+          { name: 'a bit of that' },
           {
             quantity: 1,
             unit: 'spoon',
